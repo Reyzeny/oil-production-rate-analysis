@@ -1,6 +1,29 @@
 import pandas as pd
 
 
+def calculate_spearman(start_date, end_date, column1, column2, filename="transform_output.xlsx",):
+    # Select data only within that date range
+    data_frame = pd.read_excel(filename)
+    data_frame['Date'] = pd.to_datetime(data_frame['Date'])
+    mask = (data_frame['Date'] >= start_date) & (data_frame['Date'] <= end_date)
+    data_frame = data_frame.loc[mask]
+    print(data_frame)
+    corr_val = data_frame[column1].corr(data_frame[column2], method="spearman")
+    print(corr_val)
+
+    # print(type(data_frame))
+    # print(type(data_frame['Date']))
+    #
+    # date_row_index = data_frame.loc[data_frame['Date'] == pd.to_datetime(date)].index[0]
+    # print(date_row_index)
+    # print(data_frame)
+    # print(pd.to_datetime(date))
+    # #print(data_frame[data_frame['Date'].equals(pd.to_datetime(date))])
+    # print(type(data_frame['Date']))
+
+
+
+
 def determine_well_type(injector_value):
     value = "injector" if injector_value else "producer"
     return value
@@ -33,13 +56,14 @@ def transform(filename_path, date_column_name, start_date, end_date):
         new_data_frame.at[my_index, 'days'] = (row[date_column_name] - unique_date[0]).days
 
     # Convert date column which is in type of TIMESTAMP to string
-    new_data_frame['Date'] = new_data_frame['Date'].dt.strftime('%Y-%m-%d')
+    new_data_frame['Date'] = new_data_frame['Date'].dt.strftime('%m/%d/%Y')
     print(new_data_frame)
 
     # export the new data frame into an excel
-    new_data_frame.to_excel(r'export_dataframe.xlsx', index=None, header=True)
+    new_data_frame.to_excel(r'transform_output.xlsx', index=None, header=True)
     # export the new data frame into a csv
-    new_data_frame.to_csv('results.csv', index=False)
+    new_data_frame.to_csv('transform_output.csv', index=False)
 
 
-transform('myexcel.xls', 'Date', '01/01/2000', '10/02/2000')
+#transform('myexcel.xls', 'Date', '01/01/2000', '10/02/2000')
+calculate_spearman('01/02/2000', '10/01/2000', 'C2_Prod2-producer', 'C5_Prod2-producer')
