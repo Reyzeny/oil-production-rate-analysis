@@ -1,4 +1,6 @@
 venv
 *.xlsx
 *.csv
+*.xls
 testing.py
+!input.*
